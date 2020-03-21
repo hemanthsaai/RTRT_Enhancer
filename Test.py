@@ -17,9 +17,39 @@ def _is_a_function(_data):
 
 
 # Input:   String
+# Output:  TRUE/FALSE
+# Returns  True if the parameter is a condition
+# TODO Multi line Conditions has to be checked
+def _is_a_condition(_data):
+    _regex = r"if.*\(.*\)"
+    _check = re.search(_regex, _data)
+    if _check:
+        return True
+    else:
+        return False
+
+
+# Input:   String
+# Output:  TRUE/FALSE
+# Returns  True if the parameter is a loop
+# TODO Add code - while, do-while, for
+def _is_a_loop(_data):
+    return False
+
+
+# Input:   String
+# Output:  TRUE/FALSE
+# Returns  True if the parameter is a loop
+# TODO Add code - #if, #elif,Endif
+def _is_a_compiler_directive(_data):
+    return False
+
+
+# Input:   String
 # Output:  List
 # Returns the list of Variables in a given string
-def _list_variable_in_line(_data):
+# TODO Multi line functions has to be checked
+def _list_variables_in_line(_data):
     for _element in c_Identifiers:
         _data = _data.replace(_element, ' ')
     _list_loc = _data.split(' ')
@@ -34,6 +64,8 @@ contents = file.readlines()
 
 for line in contents:
     if _is_a_function(line):
-        print(line)
-    else:
-        print(_list_variable_in_line(line))
+        print(line[:-1])
+    elif _is_a_condition(line):
+        print(line[:-1])
+    elif _is_a_loop(line):
+        print(line[:-1])
