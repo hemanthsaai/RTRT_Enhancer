@@ -2,25 +2,33 @@ import re
 
 # Contains C Identifiers
 c_Identifiers = ['=', '+', '-', '*', '/', '>', '<', '!', '^', '&', '&&', '|', '||', '(', ')', ';']
+c_data_types = ['int', 'unsigned int', 'signed int', 'float',
+                'long', 'double', 'uint32', 'uint16', 'uint8',
+                'sint32', 'sint16', 'sint8', 'float32', 'boolean']
 
 
 # Input:   FileName including its Directory
 # Output:  String holding a full file without comments
 # Reads the file and removes comments completely
-def _remove_comments(_file):
+def _remove_comments(_file_r, _file_w):
     _regex_block_comment_single_line = "/\*.*[\S]*\*/"
     _regex_block_comment_multi_line = "/\*.*[\S\s]*\*/"
     _regex_single_line = "//.*"
-    _file_descriptor = open(_file, 'r')
-    _contents = _file_descriptor.read()
+    _regex_remove_new_line = '\n\n\n*'
+    _file_descriptor_r = open(_file_r, 'r')
+    _file_descriptor_w = open(_file_w, "w")
+    _contents = _file_descriptor_r.read()
     _re_object = re.compile(_regex_block_comment_single_line)
     _contents = _re_object.sub('', _contents)
     _re_object = re.compile(_regex_block_comment_multi_line)
     _contents = _re_object.sub('', _contents)
     _re_object = re.compile(_regex_single_line)
     _contents = _re_object.sub('', _contents)
-    _file_descriptor.close()
-
+    _re_object = re.compile(_regex_remove_new_line)
+    _contents = _re_object.sub('', _contents)
+    _file_descriptor_w.write(_contents)
+    _file_descriptor_r.close()
+    _file_descriptor_w.close()
     return _contents
 
 
@@ -93,26 +101,50 @@ def _list_variables_in_line(_data):
     return _list_loc
 
 
-def _functionality_test_1():
-    file = open("Test.c", 'r')
-    contents = file.readlines()
-
-    for line in contents:
-        if _is_a_function(line):
-            print(line[:-1])
-        elif _is_a_condition(line):
-            print(line[:-1])
-        elif _is_a_loop(line):
-            print(line[:-1])
-        elif _is_an_assignment(line):
-            print(line[:-1])
-
-    file.close()
+# Input:   C line with assignment
+# Output:  List[0] with LHS variable  List[1] with RHS variable
+# TODO If line is (int vaar = 10;)  This function will not differentiate data types.
+def _lhs_rhs_split(_line):
+    _split_data = [0, 0]
+    _split_data[0] = _line.split('=')[0].replace(' ', '')
+    _split_data[1] = _line.split('=')[1].replace(' ', '').replace(';', '')[:-1]
+    return _split_data
 
 
-def _functionality_test_2():
-    data = _remove_comments("Test.c")
-    print(data)
+# TODO This function always puts init value 255,
+#       Take this from a a2l file
+def _test_case_line_RHS(_variable):
+    _line_list = ['VAR,\t', _variable, ',\tinit = ', str(255), ',\tev = init']
+    _line_complete = ""
+    for item in _line_list:
+        _line_complete += item
+    print(_line_complete)
 
 
-_functionality_test_2()
+def _functionality_test_1(_file):
+    _file_r = open(_file, 'r')
+    _data = _file_r.readlines()
+    for _line in _data:
+        if _is_a_function(_line):
+            print(_line[:-1])
+        elif _is_a_condition(_line):
+            print(_line[:-1])
+        elif _is_a_loop(_line):
+            print(_line[:-1])
+        elif _is_an_assignment(_line):
+            print(_line[:-1])
+
+
+def _functionality_test_2(_file):
+    _file_r = open(_file, 'r')
+    _data = _file_r.readlines()
+    for _line in _data:
+        if _is_an_assignment(_line):
+            _split_data = _lhs_rhs_split(_line)
+            # print(_split_data)
+            _test_case_line_RHS(_split_data[0])
+
+
+Data = _remove_comments("Test.c", "data.tmp")
+# _functionality_test_1("data.tmp")
+_functionality_test_2("data.tmp")

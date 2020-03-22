@@ -1,10 +1,8 @@
 #include <stdio.h>//Hey
 int main() {
-    double num;
-    int varr2;
-    int var3 = 0;
-    num = 20;
-    varr2 = var3;//check if this comment is removed
+    var1 = var2;
+    var3 = var4;
+    var5 = var6;//check if this comment is removed
 // check if this comment is removed
         // check if this line is removed
     printf("Enter a number: ");
