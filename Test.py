@@ -46,6 +46,18 @@ def _is_a_function(_data):
 
 # Input:   String
 # Output:  List
+# Returns  True if the parameter is a function call
+def _Capture_a2l_variable(_file, _variable):
+    _regex = r"\/\w*\s\w*\s(.*)\s\"(.*)\"\n\s*(\w*)\s(\w*)\s(\d\s\d*\s)(.*)"
+    _file_descriptor = open(_file, "r")
+    _contents = _file_descriptor.read()
+    _extracted = re.search(_regex, _contents)
+    _file_descriptor.close()
+    return _extracted.groups()
+
+
+# Input:   String
+# Output:  List
 # Returns  True if the parameter is an assignment
 # TODO Multi line Assignment
 #      statements to be considered
@@ -148,3 +160,5 @@ def _functionality_test_2(_file):
 Data = _remove_comments("Test.c", "data.tmp")
 # _functionality_test_1("data.tmp")
 _functionality_test_2("data.tmp")
+_a2l_variable = _Capture_a2l_variable("A2l_sample.txt", "HvDcILimn_InputData.HvDcIMinFromCan")
+print(_a2l_variable[1])

@@ -1,3 +1,7 @@
 TODO_ : _is_a_assignment to be implemented
 TODO_ : _remove_comment to be implemented
 TODO : seperate LHS and RHS (a = b) if it is a assignment
+TODO : a2l Processor needed
+
+TODO : List all variables in file
+TODO : Find a2l of each variable and put in a list
