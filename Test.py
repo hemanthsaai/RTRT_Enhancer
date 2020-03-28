@@ -154,7 +154,7 @@ def _get_all_variables(_file):
 # Input:   A2l File Name as String
 # Output:  Dictionary Variable name and limits of Variables
 #          [VARIABLE_NAME, [MIN_LIMIT  ,  MAX_LIMIT]]
-# TODO  : If a variable has no limits in A2l This function will not work
+# TODO  : If a variable has no limits in A2l This function set limits as [0, 255]
 #         In such cases the Max and Min limits of a variable has to be used
 def _Create_A2l_limits_of_variables(_a2l_file, _all_variables_in_file):
     a2l_limits_of_variables = {}
@@ -162,7 +162,10 @@ def _Create_A2l_limits_of_variables(_a2l_file, _all_variables_in_file):
     _A2l_file_contents = _a2l_file_descriptor.read()
     for _single_variable in _all_variables_in_file:
         data = _Capture_a2l_variable(_A2l_file_contents, _single_variable)
-        data = data[5].split(' ')
+        if data:
+            data = data[5].split(' ')
+        else:
+            data = ['0', '255']
         a2l_limits_of_variables[_single_variable] = data
 
     _a2l_file_descriptor.close()
