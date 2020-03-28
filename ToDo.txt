@@ -17,11 +17,6 @@ TODO  : Take Dependency file as input and find the variable declaration // Is it
 TODO  :  local variable initialisations to be handled
          example   int a = 20;
 
-TODO  :  Assignment of constants to be handled
-        example    a = 10;
-        example    a = MACRO;
-        MACRO and Immediate values to be identified
-
 TODO  : If RHS do not have any limits then use limits of LHS to test
 
 TODO  :   Target

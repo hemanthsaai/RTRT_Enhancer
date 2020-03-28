@@ -89,6 +89,16 @@ def _is_a_compiler_directive(_data):
     return False
 
 
+# Input:   Variable
+# Output:  TRUE/FALSE
+# Returns  True if the string is a MACRO or a CONSTANT
+def _is_a_macroOrConstant(_split_line):
+    if _split_line.isnumeric() or _split_line.isupper():
+        return True
+    else:
+        return False
+
+
 # Input:   String
 # Output:  list of Variables in a given string
 # TODO Multi line functions has to be checked
@@ -184,6 +194,17 @@ def _Create_A2l_limits_of_variables(_a2l_file, _all_variables_in_file):
     return a2l_limits_of_variables
 
 
+def _Test_case_for_line(_split_line):
+    if not (_is_a_macroOrConstant(_split_line[1])):
+        _TestCaseLine_Rhs_init_val = _test_case_line_RHS(_split_line[1], A2l_limits_of_variables)
+        print(_TestCaseLine_Rhs_init_val[0])
+        _Test_caseLine_LHS = _test_case_line_LHS(_split_line[0], A2l_limits_of_variables, _TestCaseLine_Rhs_init_val[1])
+        print(_Test_caseLine_LHS + '\n')
+    else:
+        _Test_caseLine_LHS = _test_case_line_LHS(_split_line[0], A2l_limits_of_variables, _split_line[1])
+        print(_Test_caseLine_LHS + '\n')
+
+
 Data = _remove_comments("Test.c", "data.tmp")
 _All_variables_in_file = _get_all_variables("data.tmp")
 # print(_All_variables_in_file)
@@ -200,11 +221,7 @@ def Create_Test_case_Sample():
         if _is_an_assignment(line):
             split_line = _lhs_rhs_split_regex(line)
             if split_line:
-                _TestCaseLine_Rhs_init_val = _test_case_line_RHS(split_line[1], A2l_limits_of_variables)
-                print(_TestCaseLine_Rhs_init_val[0])
-                _Test_caseLine_LHS = _test_case_line_LHS(split_line[0], A2l_limits_of_variables,
-                                                     _TestCaseLine_Rhs_init_val[1])
-                print(_Test_caseLine_LHS)
+                _Test_case_for_line(split_line)
 
     file.close()
 

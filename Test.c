@@ -3,6 +3,8 @@ int main() {
 int a = 10;
    Var1 =(float32) Var2;
    Var3=Var4;
+   Var4 = MACRO;
+   var5 = 255;
    (int)Var5 = (uint8)Var6;
    Var3 = (uint16 *)Var6;
 
