@@ -113,16 +113,28 @@ def _lhs_rhs_split(_line):
     return _split_data
 
 
-# TODO This function always puts init value 255,
-#       Take Limits from A2l_limits
-# Input     :   A variable
-# Output    :   Testcase Line for Ptu
-def _test_case_line_RHS(_variable):
-    _line_list = ['VAR,\t', _variable, ',\tinit = ', str(255), ',\tev = init']
+# TODO This function always puts init value as a2l_MAX VALUE,
+#       Take both Limits from A2l_limits
+# Input     :   RHS variable and a2l_limits_of_variables
+# Output    :   returns [PTU_LINE_OF_VARIABLE,
+#               which is expected value for LHS
+def _test_case_line_RHS(_variable, a2l_limits_of_variables):
+    _rhs_init_val = a2l_limits_of_variables[_variable][1]
+    _line_list = ['VAR\t', _variable, ',\tinit = ', _rhs_init_val, ',\tev = init']
     _line_complete = ""
     for item in _line_list:
         _line_complete += item
-    print(_line_complete)
+    return [_line_complete, _rhs_init_val]
+
+
+# Input     :   "LHS variable", "a2l_limits_of_variables" and "initial value for RHS in same line"
+# Output    :   LHS Test case Line for Ptu
+def _test_case_line_LHS(_variable, a2l_limits_of_variables, _rhs_init_val):
+    _line_list = ['VAR\t', _variable, ',\tinit = 0', ',\t\tev = ', _rhs_init_val]
+    _line_complete = ""
+    for item in _line_list:
+        _line_complete += item
+    return _line_complete
 
 
 def _get_all_variables(_file):
@@ -142,6 +154,8 @@ def _get_all_variables(_file):
 # Input:   A2l File Name as String
 # Output:  Dictionary Variable name and limits of Variables
 #          [VARIABLE_NAME, [MIN_LIMIT  ,  MAX_LIMIT]]
+# TODO  : If a variable has no limits in A2l This function will not work
+#         In such cases the Max and Min limits of a variable has to be used
 def _Create_A2l_limits_of_variables(_a2l_file, _all_variables_in_file):
     a2l_limits_of_variables = {}
     _a2l_file_descriptor = open(_a2l_file, 'r')
@@ -157,6 +171,26 @@ def _Create_A2l_limits_of_variables(_a2l_file, _all_variables_in_file):
 
 Data = _remove_comments("Test.c", "data.tmp")
 _All_variables_in_file = _get_all_variables("data.tmp")
-print(_All_variables_in_file)
+# print(_All_variables_in_file)
 A2l_limits_of_variables = _Create_A2l_limits_of_variables("A2l_sample.txt", _All_variables_in_file)
-print(A2l_limits_of_variables)
+
+
+# print(A2l_limits_of_variables)
+
+
+def Create_Test_case_Sample():
+    file = open("data.tmp", 'r')
+    contents = file.readlines()
+    for line in contents:
+        if _is_an_assignment(line):
+            split_line = _lhs_rhs_split(line)
+            _TestCaseLine_Rhs_init_val = _test_case_line_RHS(split_line[1], A2l_limits_of_variables)
+            print(_TestCaseLine_Rhs_init_val[0])
+            _Test_caseLine_LHS = _test_case_line_LHS(split_line[0], A2l_limits_of_variables,
+                                                     _TestCaseLine_Rhs_init_val[1])
+            print(_Test_caseLine_LHS)
+
+    file.close()
+
+
+Create_Test_case_Sample()
