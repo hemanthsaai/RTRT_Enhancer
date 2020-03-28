@@ -1,5 +1,7 @@
 import re
 
+from A2l_Extractor import _Capture_a2l_variable
+
 # Contains C Identifiers
 c_Identifiers = ['=', '+', '-', '*', '/', '>', '<', '!', '^', '&', '&&', '|', '||', '(', ')', ';']
 c_data_types = ['int', 'unsigned int', 'signed int', 'float',
@@ -46,18 +48,6 @@ def _is_a_function(_data):
 
 # Input:   String
 # Output:  List
-# Returns  True if the parameter is a function call
-def _Capture_a2l_variable(_file, _variable):
-    _regex = r"\/\w*\s\w*\s(.*)\s\"(.*)\"\n\s*(\w*)\s(\w*)\s(\d\s\d*\s)(.*)"
-    _file_descriptor = open(_file, "r")
-    _contents = _file_descriptor.read()
-    _extracted = re.search(_regex, _contents)
-    _file_descriptor.close()
-    return _extracted.groups()
-
-
-# Input:   String
-# Output:  List
 # Returns  True if the parameter is an assignment
 # TODO Multi line Assignment
 #      statements to be considered
@@ -100,8 +90,7 @@ def _is_a_compiler_directive(_data):
 
 
 # Input:   String
-# Output:  List
-# Returns the list of Variables in a given string
+# Output:  list of Variables in a given string
 # TODO Multi line functions has to be checked
 def _list_variables_in_line(_data):
     for _element in c_Identifiers:
@@ -110,12 +99,13 @@ def _list_variables_in_line(_data):
     _list_loc = list(dict.fromkeys(_list_loc))
     while '' in _list_loc:
         _list_loc.remove('')
+        _list_loc.remove('\n')
     return _list_loc
 
 
 # Input:   C line with assignment
 # Output:  List[0] with LHS variable  List[1] with RHS variable
-# TODO If line is (int vaar = 10;)  This function will not differentiate data types.
+# TODO If line is (int var = 10;)  This function will not differentiate data types.
 def _lhs_rhs_split(_line):
     _split_data = [0, 0]
     _split_data[0] = _line.split('=')[0].replace(' ', '')
@@ -124,7 +114,9 @@ def _lhs_rhs_split(_line):
 
 
 # TODO This function always puts init value 255,
-#       Take this from a a2l file
+#       Take Limits from A2l_limits
+# Input     :   A variable
+# Output    :   Testcase Line for Ptu
 def _test_case_line_RHS(_variable):
     _line_list = ['VAR,\t', _variable, ',\tinit = ', str(255), ',\tev = init']
     _line_complete = ""
@@ -133,32 +125,38 @@ def _test_case_line_RHS(_variable):
     print(_line_complete)
 
 
-def _functionality_test_1(_file):
-    _file_r = open(_file, 'r')
-    _data = _file_r.readlines()
-    for _line in _data:
-        if _is_a_function(_line):
-            print(_line[:-1])
-        elif _is_a_condition(_line):
-            print(_line[:-1])
-        elif _is_a_loop(_line):
-            print(_line[:-1])
-        elif _is_an_assignment(_line):
-            print(_line[:-1])
-
-
-def _functionality_test_2(_file):
+def _get_all_variables(_file):
+    _var_in_line = []
+    _all_variables_in_file = []
     _file_r = open(_file, 'r')
     _data = _file_r.readlines()
     for _line in _data:
         if _is_an_assignment(_line):
-            _split_data = _lhs_rhs_split(_line)
-            # print(_split_data)
-            _test_case_line_RHS(_split_data[0])
+            _var_in_line = _list_variables_in_line(_line)
+            for _variable in _var_in_line:
+                _all_variables_in_file.append(_variable)
+    _all_variables_in_file = list(dict.fromkeys(_all_variables_in_file))
+    return _all_variables_in_file
+
+
+# Input:   A2l File Name as String
+# Output:  Dictionary Variable name and limits of Variables
+#          [VARIABLE_NAME, [MIN_LIMIT  ,  MAX_LIMIT]]
+def _Create_A2l_limits_of_variables(_a2l_file, _all_variables_in_file):
+    a2l_limits_of_variables = {}
+    _a2l_file_descriptor = open(_a2l_file, 'r')
+    _A2l_file_contents = _a2l_file_descriptor.read()
+    for _single_variable in _all_variables_in_file:
+        data = _Capture_a2l_variable(_A2l_file_contents, _single_variable)
+        data = data[5].split(' ')
+        a2l_limits_of_variables[_single_variable] = data
+
+    _a2l_file_descriptor.close()
+    return a2l_limits_of_variables
 
 
 Data = _remove_comments("Test.c", "data.tmp")
-# _functionality_test_1("data.tmp")
-_functionality_test_2("data.tmp")
-_a2l_variable = _Capture_a2l_variable("A2l_sample.txt", "HvDcILimn_InputData.HvDcIMinFromCan")
-print(_a2l_variable[1])
+_All_variables_in_file = _get_all_variables("data.tmp")
+print(_All_variables_in_file)
+A2l_limits_of_variables = _Create_A2l_limits_of_variables("A2l_sample.txt", _All_variables_in_file)
+print(A2l_limits_of_variables)
