@@ -14,9 +14,42 @@ TODO  : Variable limits has to be converted from string to int/float
 TODO  : Implement a function to find "HEMANTH" is a Macro or a Variable
 TODO  : Take Dependency file as input and find the variable declaration // Is it needed?
 
+TODO  :  local variable initialisations to be handled
+         example   int a = 20;
+
+TODO  :  Assignment of constants to be handled
+        example    a = 10;
+        example    a = MACRO;
+        MACRO and Immediate values to be identified
 
 TODO  :  Remove Typecasts
          var1 = (int)var2;
 
+TODO  : If RHS do not have any limits then use limits of LHS to test
+
 TODO  :   Target
           PTU script for Test.c
+
+
+Challenges AHEAD:
+TODO  : no backward compatibility
+        example:
+        a = b;
+        c = a;
+        In this case script has no idea if a is already initialized
+        if a is initialized from b and c is initialised from a then script also has to follow the flow
+
+TODO  : no compatibility to statements like this
+        a = b * c;
+        arithmetic operation statements has to be handled
+
+TODO  : Conditions has to be handled
+        if (a == 10)
+        {
+            Test case to be created only for this part
+        }
+        else
+        {
+            Test case to be created only for this part
+        }
+        similarly switches also
