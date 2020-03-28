@@ -113,6 +113,18 @@ def _lhs_rhs_split(_line):
     return _split_data
 
 
+# Input:   C line with assignment
+# Output:  List[0] with LHS variable  List[1] with RHS variable
+# TODO If line is (int var = 10;)  This function will not differentiate data types.
+def _lhs_rhs_split_regex(_line):
+    _regex = r"\(?\s?\w*?\s?\)?\s*?(\w*)\s*?=\s*?\(?\s?\w*?\s?\*?\s?\)?\s*?(\w*?)\s*;"
+    _check = re.search(_regex, _line)
+    if _check:
+        return _check.groups()
+    else:
+        return 0
+
+
 # TODO This function always puts init value as a2l_MAX VALUE,
 #       Take both Limits from A2l_limits
 # Input     :   RHS variable and a2l_limits_of_variables
@@ -186,12 +198,13 @@ def Create_Test_case_Sample():
     contents = file.readlines()
     for line in contents:
         if _is_an_assignment(line):
-            split_line = _lhs_rhs_split(line)
-            _TestCaseLine_Rhs_init_val = _test_case_line_RHS(split_line[1], A2l_limits_of_variables)
-            print(_TestCaseLine_Rhs_init_val[0])
-            _Test_caseLine_LHS = _test_case_line_LHS(split_line[0], A2l_limits_of_variables,
+            split_line = _lhs_rhs_split_regex(line)
+            if split_line:
+                _TestCaseLine_Rhs_init_val = _test_case_line_RHS(split_line[1], A2l_limits_of_variables)
+                print(_TestCaseLine_Rhs_init_val[0])
+                _Test_caseLine_LHS = _test_case_line_LHS(split_line[0], A2l_limits_of_variables,
                                                      _TestCaseLine_Rhs_init_val[1])
-            print(_Test_caseLine_LHS)
+                print(_Test_caseLine_LHS)
 
     file.close()
 

@@ -22,9 +22,6 @@ TODO  :  Assignment of constants to be handled
         example    a = MACRO;
         MACRO and Immediate values to be identified
 
-TODO  :  Remove Typecasts
-         var1 = (int)var2;
-
 TODO  : If RHS do not have any limits then use limits of LHS to test
 
 TODO  :   Target

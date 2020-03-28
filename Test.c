@@ -1,9 +1,10 @@
 #include <stdio.h>//Hey
 int main() {
-   Var1 = Var2;
-   Var3 = Var4;
-   Var5 = Var6;
-   Var3 = Var6;
+int a = 10;
+   Var1 =(float32) Var2;
+   Var3=Var4;
+   (int)Var5 = (uint8)Var6;
+   Var3 = (uint16 *)Var6;
 
    /*Multi Line Comment
 Sample1*/
