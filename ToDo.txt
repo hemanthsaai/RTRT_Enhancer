@@ -17,6 +17,8 @@ TODO  : Take Dependency file as input and find the variable declaration // Is it
 TODO  :  local variable initialisations to be handled
          example   int a = 20;
 
+TODO : isnumeric is not working for float]
+
 TODO  : If RHS do not have any limits then use limits of LHS to test
 
 TODO  :   Target
@@ -33,6 +35,7 @@ TODO  : no backward compatibility
 
 TODO  : no compatibility to statements like this
         a = b * c;
+        a = (TRUE == b);
         arithmetic operation statements has to be handled
 
 TODO  : Conditions has to be handled
