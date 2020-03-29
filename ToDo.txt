@@ -3,21 +3,17 @@ TODO  :  Create a function to check the compatibility
          if yes, Only then create test case else don't create a tet case
             report the issue in line
 
-TODO : separate LHS and RHS (a = b) if it is a assignment
-
-
 
 TODO  : Variable limits has to be converted from string to int/float
         for calculating MIN-1 etc
 
 
-TODO  : Implement a function to find "HEMANTH" is a Macro or a Variable
 TODO  : Take Dependency file as input and find the variable declaration // Is it needed?
 
 TODO  :  local variable initialisations to be handled
          example   int a = 20;
 
-TODO : isnumeric is not working for float]
+TODO : isnumeric is not working for float
 
 TODO  : If RHS do not have any limits then use limits of LHS to test
 
@@ -48,3 +44,8 @@ TODO  : Conditions has to be handled
             Test case to be created only for this part
         }
         similarly switches also
+
+TODO  :  If a line is not assignment then save it to a file saying to which the test case is not generated
+
+TODO  :  Report an error if the boundaries of LHS is less than Boundary of RHS
+TODO  :  Report the variables not available in A2L

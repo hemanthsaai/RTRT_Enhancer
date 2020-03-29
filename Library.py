@@ -141,8 +141,9 @@ def _lhs_rhs_split_regex(_line):
 # Output    :   returns [PTU_LINE_OF_VARIABLE,
 #               which is expected value for LHS
 def _test_case_line_RHS(_variable, a2l_limits_of_variables):
-    _rhs_init_val = a2l_limits_of_variables[_variable][1]
-    _line_list = ['VAR\t', _variable, ',\tinit = ', _rhs_init_val, ',\tev = init']
+    _rhs_init_val = a2l_limits_of_variables[_variable]
+    _line_list = ['VAR\t', _variable, ',\tinit (RTRT_Iter) in {', _rhs_init_val[0], ',', _rhs_init_val[1],
+                  '},\t\tev = init']
     _line_complete = ""
     for item in _line_list:
         _line_complete += item
@@ -152,7 +153,18 @@ def _test_case_line_RHS(_variable, a2l_limits_of_variables):
 # Input     :   "LHS variable", "a2l_limits_of_variables" and "initial value for RHS in same line"
 # Output    :   LHS Test case Line for Ptu
 def _test_case_line_LHS(_variable, a2l_limits_of_variables, _rhs_init_val):
-    _line_list = ['VAR\t', _variable, ',\tinit = 0', ',\t\tev = ', _rhs_init_val]
+    _line_list = ['VAR\t', _variable, ',\tinit = 0', ',\t\tev (RTRT_Iter) with {', _rhs_init_val[0], ',',
+                  _rhs_init_val[1], '}']
+    _line_complete = ""
+    for item in _line_list:
+        _line_complete += item
+    return _line_complete
+
+
+# Input     :   "LHS variable", and "expected value for RHS in same line"
+# Output    :   LHS Test case Line for Ptu for a MACRO
+def _test_case_line_LHS_MACRO_CONSTANT(_variable, _rhs_ev_val):
+    _line_list = ['VAR\t', _variable, ',\tinit = 0', ',\t\tev = ', _rhs_ev_val]
     _line_complete = ""
     for item in _line_list:
         _line_complete += item
@@ -185,7 +197,10 @@ def _Create_A2l_limits_of_variables(_a2l_file, _all_variables_in_file):
     for _single_variable in _all_variables_in_file:
         data = _Capture_a2l_variable(_A2l_file_contents, _single_variable)
         if data:
-            data = data[5].split(' ')
+            if len(data) > 4:
+                data = data[5].split(' ')
+            else:
+                data = ['0', '255']
         else:
             data = ['0', '255']
         a2l_limits_of_variables[_single_variable] = data
@@ -201,7 +216,7 @@ def _Test_case_for_line(_split_line):
         _Test_caseLine_LHS = _test_case_line_LHS(_split_line[0], A2l_limits_of_variables, _TestCaseLine_Rhs_init_val[1])
         print(_Test_caseLine_LHS + '\n')
     else:
-        _Test_caseLine_LHS = _test_case_line_LHS(_split_line[0], A2l_limits_of_variables, _split_line[1])
+        _Test_caseLine_LHS = _test_case_line_LHS_MACRO_CONSTANT(_split_line[0], _split_line[1])
         print(_Test_caseLine_LHS + '\n')
 
 
@@ -215,6 +230,7 @@ A2l_limits_of_variables = _Create_A2l_limits_of_variables("A2l_sample.txt", _All
 
 
 def Create_Test_case_Sample():
+    print('VAR\tRTRT_Iter,\tinit in {0, 1},\tev = init')
     file = open("data.tmp", 'r')
     contents = file.readlines()
     for line in contents:
