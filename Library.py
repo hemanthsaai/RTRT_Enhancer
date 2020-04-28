@@ -93,6 +93,7 @@ def _is_a_compiler_directive(_data):
 # Output:  TRUE/FALSE
 # Returns  True if the string is a MACRO or a CONSTANT
 def _is_a_macroOrConstant(_split_line):
+    _split_line = _split_line.replace(' ', '')
     if _split_line.isnumeric() or _split_line.isupper():
         return True
     else:
@@ -127,7 +128,8 @@ def _lhs_rhs_split(_line):
 # Output:  List[0] with LHS variable  List[1] with RHS variable
 # TODO If line is (int var = 10;)  This function will not differentiate data types.
 def _lhs_rhs_split_regex(_line):
-    _regex = r"\(?\s?\w*?\s?\)?\s*?(\w*)\s*?=\s*?\(?\s?\w*?\s?\*?\s?\)?\s*?(\w*?)\s*;"
+    # _regex = r"\(?\s?\w*?\s?\)?\s*?(\w*\W*?\w*)\s*?=\s*?\(?\s?\w*?\s?\*?\s?\)?\s*?(\w*\W*?\w*)\s*;"
+    _regex = r"\(?\s?\w*?\s?\)?\s*?(\w*\W*?\w*)\s*?=(\s*?\(?\s?\w*?\s?\*?\s?\)\s*?)?(\w*\W*?\w*)\s*;"
     _check = re.search(_regex, _line)
     if _check:
         return _check.groups()
@@ -210,13 +212,13 @@ def _Create_A2l_limits_of_variables(_a2l_file, _all_variables_in_file):
 
 
 def _Test_case_for_line(_split_line):
-    if not (_is_a_macroOrConstant(_split_line[1])):
-        _TestCaseLine_Rhs_init_val = _test_case_line_RHS(_split_line[1], A2l_limits_of_variables)
+    if not (_is_a_macroOrConstant(_split_line[2])):
+        _TestCaseLine_Rhs_init_val = _test_case_line_RHS(_split_line[2], A2l_limits_of_variables)
         print(_TestCaseLine_Rhs_init_val[0])
         _Test_caseLine_LHS = _test_case_line_LHS(_split_line[0], A2l_limits_of_variables, _TestCaseLine_Rhs_init_val[1])
         print(_Test_caseLine_LHS + '\n')
     else:
-        _Test_caseLine_LHS = _test_case_line_LHS_MACRO_CONSTANT(_split_line[0], _split_line[1])
+        _Test_caseLine_LHS = _test_case_line_LHS_MACRO_CONSTANT(_split_line[0], _split_line[2])
         print(_Test_caseLine_LHS + '\n')
 
 
@@ -237,7 +239,10 @@ def Create_Test_case_Sample():
         if _is_an_assignment(line):
             split_line = _lhs_rhs_split_regex(line)
             if split_line:
-                _Test_case_for_line(split_line)
+                try:
+                    _Test_case_for_line(split_line)
+                except:
+                    print("Error in line:", split_line)
 
     file.close()
 

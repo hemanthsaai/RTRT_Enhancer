@@ -7,7 +7,7 @@ TODO  :  Create a function to check the compatibility
 TODO  : Variable limits has to be converted from string to int/float
         for calculating MIN-1 etc
 
-
+TODO  : Differenciate b/w functions in testcase
 TODO  : Take Dependency file as input and find the variable declaration // Is it needed?
 
 TODO  :  local variable initialisations to be handled
@@ -49,3 +49,9 @@ TODO  :  If a line is not assignment then save it to a file saying to which the 
 
 TODO  :  Report an error if the boundaries of LHS is less than Boundary of RHS
 TODO  :  Report the variables not available in A2L
+
+
+
+understanding
+if LHS has more strings without ( at all then consider it not a assignment
+
