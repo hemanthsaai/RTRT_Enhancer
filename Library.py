@@ -13,22 +13,25 @@ c_data_types = ['int', 'unsigned int', 'signed int', 'float',
 # Output:  String holding a full file without comments
 # Reads the file and removes comments completely
 def _remove_comments(_file_r, _file_w):
-    _regex_block_comment_single_line = "/\*.*[\S]*\*/"
-    _regex_block_comment_multi_line = "/\*.*[\S\s]*\*/"
-    _regex_single_line = "//.*"
-    _regex_remove_new_line = '\n\n\n*'
     _file_descriptor_r = open(_file_r, 'r')
     _file_descriptor_w = open(_file_w, "w")
-    _contents = _file_descriptor_r.read()
-    _re_object = re.compile(_regex_block_comment_single_line)
-    _contents = _re_object.sub('', _contents)
-    _re_object = re.compile(_regex_block_comment_multi_line)
-    _contents = _re_object.sub('', _contents)
-    _re_object = re.compile(_regex_single_line)
-    _contents = _re_object.sub('', _contents)
-    _re_object = re.compile(_regex_remove_new_line)
-    _contents = _re_object.sub('', _contents)
-    _file_descriptor_w.write(_contents)
+    _contents = _file_descriptor_r.readlines()
+    status = 0
+    for line in _contents:
+        if status == 0:
+            if '/*' in line:
+                if '*/' in line:
+                    continue
+                else:
+                    status = 1
+            elif '//' in line:
+                continue
+            else:
+                _file_descriptor_w.write(line)
+
+        else:
+            if '*/' in line:
+                status = 0
     _file_descriptor_r.close()
     _file_descriptor_w.close()
     return _contents
